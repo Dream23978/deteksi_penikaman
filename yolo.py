@@ -3,12 +3,12 @@ from ultralytics import YOLO
 
 # 1. Muat kedua model versi Nano (paling ringan & cepat untuk CPU laptop)
 model_detect = YOLO("best.pt")           # Model custom pisau (Nano)
-model_pose = YOLO("yolo11n-pose.pt")     # Model pose versi Nano (sangat cepat & enteng)
+model_pose = YOLO("yolo11n-pose.pt")     # Model pose versi Nano 
 
 # 2. Buka sumber video dari IP Webcam HP
 cap = cv2.VideoCapture(1)
 
-# Atur buffer OpenCV agar selalu mengambil frame paling baru (anti-delay)
+# Atur buffer OpenCV agar selalu mengambil frame palingbaru 
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
 cv2.namedWindow("YOLO Object + Pose Combined", cv2.WINDOW_NORMAL)
@@ -30,7 +30,9 @@ while cap.isOpened():
 
     # Jalankan AI setiap 2 frame sekali agar video tetap lancar dan responsif
     if frame_count % 2 == 0 or results_pose is None:
-        results_detect = model_detect(frame, imgsz=384, conf=0.35, verbose=False)[0]
+        # imgsz=640 & conf=0.20 agar pisau dari jarak jauh tetap tajam & mudah terdeteksi
+        results_detect = model_detect(frame, imgsz=640, conf=0.20, verbose=False)[0]
+        # Pose manusia cukup imgsz=384 agar hemat CPU
         results_pose = model_pose(frame, imgsz=384, verbose=False)[0]
 
     # 5. Gabungkan visualisasi orang + pose + pisau jika hasil deteksi sudah tersedia
